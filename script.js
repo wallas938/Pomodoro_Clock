@@ -3,74 +3,88 @@ var dizaineMinute = document.getElementById('dizaine-minute')
 var uniteMinute = document.getElementById('unite-minute')
 var dizaineSeconde = document.getElementById('dizaine-seconde')
 var uniteSeconde = document.getElementById('unite-seconde')
+var playAndPause = document.getElementById('pause-play')
+var reset = document.getElementById('reset')
+var isStarted = false;
+var timer
 
-
-function uniteSecondeIncrementer(toBeIncremented) {
+function uniteSecondeDecrementer(toBeDecremented) {
 	
-	intNumber = Number(toBeIncremented.innerHTML)
+	intNumber = Number(toBeDecremented.innerHTML)
 
-	intNumberIncremented = intNumber >= 9 ? 0 : intNumber+1
+	intNumberDecremented = intNumber >= 9 ? 0 : intNumber+1
 
-	unit = intNumberIncremented
+	unit = intNumberDecremented
 
-	toBeIncremented.innerHTML = unit
+	toBeDecremented.innerHTML = unit
 }
 
-function uniteMinuteIncrementer(toBeIncremented) {
+function uniteMinuteDecrementer(toBeDecremented) {
 	
-	intNumber = Number(toBeIncremented.innerHTML)
+	intNumber = Number(toBeDecremented.innerHTML)
 
-	intNumberIncremented = intNumber >= 9 ? 0 : intNumber+1
+	intNumberDecremented = intNumber >= 9 ? 0 : intNumber+1
 
-	unit = intNumberIncremented
+	unit = intNumberDecremented
 
-	toBeIncremented.innerHTML = unit
+	toBeDecremented.innerHTML = unit
 }
 
-function dizaineSecondeIncrementer(toBeIncremented) {
+function dizaineSecondeDecrementer(toBeDecremented) {
 	
-	intNumber = Number(toBeIncremented.innerHTML)
+	intNumber = Number(toBeDecremented.innerHTML)
 
-	intNumberIncremented = intNumber >= 5 ? 0 : intNumber+1
+	intNumberDecremented = intNumber >= 5 ? 0 : intNumber+1
 
-	unit = intNumberIncremented
+	unit = intNumberDecremented
 
-	toBeIncremented.innerHTML = unit
+	toBeDecremented.innerHTML = unit
 }
 
-function dizaineMinuteIncrementer(toBeIncremented) {
+function dizaineMinuteDecrementer(toBeDecremented) {
 	
 	intNumber = Number(toBeIncremented.innerHTML)
 
-	intNumberIncremented = intNumber >= 5 ? 0 : intNumber+1
+	intNumberDecremented = intNumber >= 9 ? 0 : intNumber+1
 
-	unit = intNumberIncremented
+	unit = intNumberDecremented
 
-	toBeIncremented.innerHTML = unit
+	toBeDecremented.innerHTML = unit
 }
 
 function compteur() {
 
- uniteSecondeIncrementer(uniteSeconde)
+ uniteSecondeDecrementer(uniteSeconde)
 
- if (uniteSeconde.innerHTML >= "9") {
+ if (uniteSeconde.innerHTML >= "9") { setTimeout(function() {dizaineSecondeDecrementer(dizaineSeconde)}, 980)}
 
- 	setTimeout(function() {dizaineSecondeIncrementer(dizaineSeconde)}, 1000)
- 
- }
+ if (dizaineSeconde.innerHTML >= "5" && uniteSeconde.innerHTML >= "9") { setTimeout(function() {uniteMinuteDecrementer(uniteMinute)}, 1000) }
 
- if (dizaineSeconde.innerHTML >= "5" && uniteSeconde.innerHTML >= "9") {
-
- 	setTimeout(function() {uniteMinuteIncrementer(uniteMinute)}, 1000)
- }
-
- if (uniteMinute.innerHTML >= "9" && dizaineSeconde.innerHTML >= "5" && uniteSeconde.innerHTML >= "9") {
-
- 	setTimeout(function() {dizaineMinuteIncrementer(dizaineMinute)}, 1000)
- }
+ if (uniteMinute.innerHTML >= "9" && dizaineSeconde.innerHTML >= "5" && uniteSeconde.innerHTML >= "9") {setTimeout(function() {dizaineMinuteDecrementer(dizaineMinute)}, 1000) }
 
 }
 
-var timer = setInterval(compteur, 1000)
+function startTimer() {
+	if(!isStarted) {
+		timer = setInterval(compteur, 1000)
+		isStarted = true
+	}else {
+		clearInterval(timer)
+		isStarted = false
+	}
+}
 
+function remettreBaliseAzero() {
+	dizaineMinute.innerHTML = "0"
+	uniteMinute.innerHTML = "0" 
+	dizaineSeconde.innerHTML = "0"
+	uniteSeconde.innerHTML = "0"
+}
+
+function reloadTimer() {
+	remettreBaliseAzero()
+}
 /* Boutons a gerer */
+
+playAndPause.addEventListener('click', startTimer)
+reset.addEventListener('click', reloadTimer)
