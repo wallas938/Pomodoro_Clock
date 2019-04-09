@@ -57,21 +57,20 @@ function dizaineMinuteDecrementer(toBeDecremented) {
 
 function compteur() {
 
+	setTimeout(function() {uniteSecondeDecrementer(uniteSeconde)}, 0)
+
 	if (uniteSeconde.innerHTML <= "0" && !timeOver) { 
 
-	setTimeout(function() {dizaineSecondeDecrementer(dizaineSeconde)}, 0)
+		setTimeout(function() {dizaineSecondeDecrementer(dizaineSeconde)}, 0)
 
-		console.log('dizaine des secondes decrementer')
 	}
 
 	if (dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver) { 
 		
-		uniteMinuteDecrementer(uniteMinute)
+		setTimeout(function() {uniteMinuteDecrementer(uniteMinute)}, 0)
 
-		console.log('uniter des minutes decrementer')
 	}
 
-	setTimeout(function() {uniteSecondeDecrementer(uniteSeconde)}, 0)
 
 	if (uniteMinute.innerHTML <= "0" && dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver) {
 		
