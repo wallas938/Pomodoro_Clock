@@ -5,14 +5,16 @@ var dizaineSeconde = document.getElementById('dizaine-seconde')
 var uniteSeconde = document.getElementById('unite-seconde')
 var playAndPause = document.getElementById('pause-play')
 var reset = document.getElementById('reset')
-var isStarted = false;
+var isStarted = false
+var timeOver = false
+var pause
 var timer
 
 function uniteSecondeDecrementer(toBeDecremented) {
-	
+
 	intNumber = Number(toBeDecremented.innerHTML)
 
-	intNumberDecremented = intNumber >= 9 ? 0 : intNumber+1
+	intNumberDecremented = intNumber == 0 ? 9 : intNumber-1
 
 	unit = intNumberDecremented
 
@@ -23,7 +25,7 @@ function uniteMinuteDecrementer(toBeDecremented) {
 	
 	intNumber = Number(toBeDecremented.innerHTML)
 
-	intNumberDecremented = intNumber >= 9 ? 0 : intNumber+1
+	intNumberDecremented = intNumber == 0 ? 9 : intNumber-1
 
 	unit = intNumberDecremented
 
@@ -34,18 +36,19 @@ function dizaineSecondeDecrementer(toBeDecremented) {
 	
 	intNumber = Number(toBeDecremented.innerHTML)
 
-	intNumberDecremented = intNumber >= 5 ? 0 : intNumber+1
+	intNumberDecremented = intNumber == 0 ? 5 : intNumber-1
 
 	unit = intNumberDecremented
 
 	toBeDecremented.innerHTML = unit
+
 }
 
 function dizaineMinuteDecrementer(toBeDecremented) {
 	
-	intNumber = Number(toBeIncremented.innerHTML)
+	intNumber = Number(toBeDecremented.innerHTML)
 
-	intNumberDecremented = intNumber >= 9 ? 0 : intNumber+1
+	intNumberDecremented = intNumber == 0 ? 5 : intNumber-1
 
 	unit = intNumberDecremented
 
@@ -54,37 +57,93 @@ function dizaineMinuteDecrementer(toBeDecremented) {
 
 function compteur() {
 
- uniteSecondeDecrementer(uniteSeconde)
+	if (uniteSeconde.innerHTML <= "0" && !timeOver) { 
 
- if (uniteSeconde.innerHTML >= "9") { setTimeout(function() {dizaineSecondeDecrementer(dizaineSeconde)}, 980)}
+	setTimeout(function() {dizaineSecondeDecrementer(dizaineSeconde)}, 0)
 
- if (dizaineSeconde.innerHTML >= "5" && uniteSeconde.innerHTML >= "9") { setTimeout(function() {uniteMinuteDecrementer(uniteMinute)}, 1000) }
+		console.log('dizaine des secondes decrementer')
+	}
 
- if (uniteMinute.innerHTML >= "9" && dizaineSeconde.innerHTML >= "5" && uniteSeconde.innerHTML >= "9") {setTimeout(function() {dizaineMinuteDecrementer(dizaineMinute)}, 1000) }
+	if (dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver) { 
+		
+		uniteMinuteDecrementer(uniteMinute)
+
+		console.log('uniter des minutes decrementer')
+	}
+
+	setTimeout(function() {uniteSecondeDecrementer(uniteSeconde)}, 0)
+
+	if (uniteMinute.innerHTML <= "0" && dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver) {
+		
+		dizaineMinuteDecrementer(dizaineMinute)
+
+		console.log('dizaine des minutes decrementer')
+	}
+
+	if (uniteSeconde.innerHTML === "1" && dizaineSeconde.innerHTML === "0" && uniteMinute.innerHTML === "0" && dizaineMinute.innerHTML === "0" && !timeOver) {
+
+		timeOver = true
+		
+		clearInterval(timer)
+
+		console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' pause: ', pause)
+
+	}
 
 }
 
-function startTimer() {
-	if(!isStarted) {
+function timerHandler() {
+
+	if(!isStarted && !timeOver || pause) {
+
 		timer = setInterval(compteur, 1000)
+
 		isStarted = true
-	}else {
+
+		pause = false
+
+		console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' pause: ', pause)
+
+	}else if(!pause && isStarted && !timeOver){
+
 		clearInterval(timer)
-		isStarted = false
+
+		pause = true
+
+		console.log('pause: ', pause)
 	}
 }
 
-function remettreBaliseAzero() {
+function putBaliseToZero() {
 	dizaineMinute.innerHTML = "0"
 	uniteMinute.innerHTML = "0" 
 	dizaineSeconde.innerHTML = "0"
 	uniteSeconde.innerHTML = "0"
 }
 
+function resetTimer() {
+	dizaineMinute.innerHTML = "2"
+	uniteMinute.innerHTML = "5" 
+	dizaineSeconde.innerHTML = "0"
+	uniteSeconde.innerHTML = "0"
+
+	clearInterval(timer)
+
+	isStarted = false
+
+	timeOver = false
+
+	console.log('isStarted: ', isStarted, ' timerOver: ', timeOver)
+
+}
+
 function reloadTimer() {
-	remettreBaliseAzero()
+
+	resetTimer()
+	
 }
 /* Boutons a gerer */
 
-playAndPause.addEventListener('click', startTimer)
+playAndPause.addEventListener('click', timerHandler)
+
 reset.addEventListener('click', reloadTimer)
