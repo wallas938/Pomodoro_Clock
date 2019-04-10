@@ -1,0 +1,32 @@
+#app-name {
+    text-align: center;
+    color: crimson;
+}
+
+#pomodoro-clock-app {
+    width: 100%;
+}
+
+.grid-container {
+    text-align: center;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+#breakLength, #sessionLength {
+    font-size: 40px;
+    font-weight: bolder;
+}
+
+#chronoTime-buttons {
+    text-align: center;
+}
+
+#timer {
+    width: 50%;
+    font-size: 108px;
+    font-weight: bolder;
+    margin: 0 auto;
+    text-align: center;
+}
