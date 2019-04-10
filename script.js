@@ -13,8 +13,10 @@ var arrowUpForTimer = document.getElementById('sessionIncrementer')
 var arrowDownForTimer = document.getElementById('sessionDecrementer')
 var isStarted = false
 var timeOver = false
-var pause
+var sessionPause = false
+var breakPause = false
 var timer
+var isBreakTriggered
 
 function incrementer(toBeIncremented) {
 
@@ -46,6 +48,18 @@ function timerInitialisation() {
 
 	resetTimer()
 }
+//Recuperation du temps de Pause dans le DOM et implémenter breakInit
+function breakInitialisation() {
+	
+	dizaineMinute.innerHTML = !breakLength.innerHTML[1] ? "0" : breakLength.innerHTML[0]
+	uniteMinute.innerHTML = !breakLength.innerHTML[1] ? breakLength.innerHTML[0] : breakLength.innerHTML[1]
+	dizaineSeconde.innerHTML = "0"
+	uniteSeconde.innerHTML = "0"
+
+	console.log('Temps de Pause LANCE...')
+
+	timerHandler()
+} 
 
 function uniteSecondeDecrementer(toBeDecremented) {
 
@@ -56,6 +70,7 @@ function uniteSecondeDecrementer(toBeDecremented) {
 	unit = intNumberDecremented
 
 	toBeDecremented.innerHTML = unit
+
 }
 
 function uniteMinuteDecrementer(toBeDecremented) {
@@ -67,6 +82,7 @@ function uniteMinuteDecrementer(toBeDecremented) {
 	unit = intNumberDecremented
 
 	toBeDecremented.innerHTML = unit
+
 }
 
 function dizaineSecondeDecrementer(toBeDecremented) {
@@ -98,7 +114,7 @@ function compteur() {
 		uniteSecondeDecrementer(uniteSeconde)
 	}, 0)
 
-	if (uniteSeconde.innerHTML <= "0" && !timeOver) {
+	if (uniteSeconde.innerHTML <= "0" && !timeOver || uniteSeconde.innerHTML <= "0" && isBreakTriggered) {
 
 		setTimeout(function () {
 			dizaineSecondeDecrementer(dizaineSeconde)
@@ -106,7 +122,7 @@ function compteur() {
 
 	}
 
-	if (dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver) {
+	if (dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver || dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && isBreakTriggered) {
 
 		setTimeout(function () {
 			uniteMinuteDecrementer(uniteMinute)
@@ -115,7 +131,7 @@ function compteur() {
 	}
 
 
-	if (uniteMinute.innerHTML <= "0" && dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver) {
+	if (uniteMinute.innerHTML <= "0" && dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver || uniteMinute.innerHTML <= "0" && dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && isBreakTriggered) {
 
 		dizaineMinuteDecrementer(dizaineMinute)
 
@@ -124,43 +140,86 @@ function compteur() {
 
 	if (uniteSeconde.innerHTML === "1" && dizaineSeconde.innerHTML === "0" && uniteMinute.innerHTML === "0" && dizaineMinute.innerHTML === "0" && !timeOver) {
 
-		timeOver = true
+		clearInterval(timer)
+
+		console.log('Démarrage du Temps de PAUSE...')
+
+		setTimeout( function() {
+
+			timeOver = true
+			
+			isBreakTriggered = true
+
+			breakInitialisation()
+			
+			console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
+
+		}, 
+
+		5000)
+	}
+
+	if (uniteSeconde.innerHTML === "1" && dizaineSeconde.innerHTML === "0" && uniteMinute.innerHTML === "0" && dizaineMinute.innerHTML === "0" && isBreakTriggered) {
 
 		clearInterval(timer)
 
-		console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' pause: ', pause)
+		console.log('Démarrage du Temps de SESSION...')
 
+		setTimeout( function() {
+
+			timerInitialisation()
+			
+			timerHandler()
+		
+			console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
+
+		}, 
+
+		5000)
 	}
 
 }
 
 function timerHandler() {
 
-	if (!isStarted && !timeOver || pause) {
+	if (!isStarted && !timeOver && !isBreakTriggered || isStarted && sessionPause) { // Demarrage de la session
 
 		timer = setInterval(compteur, 1000)
 
 		isStarted = true
 
-		pause = false
+		sessionPause = false
 
-		console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' pause: ', pause)
+		//console.log('SESSION')
 
-	} else if (!pause && isStarted && !timeOver) {
+		//console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered, ' breakPause: ', breakPause)
+
+	}else if (isStarted && timeOver && isBreakTriggered || breakPause) { // Demarrage de la pause
+
+		breakPause = false
+
+		timeOver = false
+
+		timer = setInterval(compteur, 1000)
+
+		//console.log('BREAK')
+
+		//console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered, ' breakPause: ', breakPause)
+
+	}else if (!sessionPause || !breakPause) { // Mise en pause
+
+		if(isStarted && !timeOver && !isBreakTriggered) { sessionPause = true }
+
+		else { breakPause = true }
+		
 
 		clearInterval(timer)
 
-		pause = true
+		//console.log('PAUSE')
 
-		console.log('pause: ', pause)
-	}
-}
+		//console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered, ' breakPause: ', breakPause)
 
-function putBaliseToZero() {
-	dizaineMinute.innerHTML = "0"
-	uniteMinute.innerHTML = "0"
-	dizaineSeconde.innerHTML = "0"
-	uniteSeconde.innerHTML = "0"
+	} 
 }
 
 function resetTimer() {
@@ -171,7 +230,11 @@ function resetTimer() {
 
 	timeOver = false
 
-	console.log('isStarted: ', isStarted, ' timerOver: ', timeOver)
+	isBreakTriggered = false
+
+	sessionPause = false
+
+	console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
 
 }
 
