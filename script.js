@@ -134,8 +134,6 @@ function compteur() {
 	if (uniteMinute.innerHTML <= "0" && dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && !timeOver || uniteMinute.innerHTML <= "0" && dizaineSeconde.innerHTML <= "0" && uniteSeconde.innerHTML <= "0" && isBreakTriggered) {
 
 		dizaineMinuteDecrementer(dizaineMinute)
-
-		console.log('dizaine des minutes decrementer')
 	}
 
 	if (uniteSeconde.innerHTML === "1" && dizaineSeconde.innerHTML === "0" && uniteMinute.innerHTML === "0" && dizaineMinute.innerHTML === "0" && !timeOver) {
@@ -152,7 +150,7 @@ function compteur() {
 
 			breakInitialisation()
 			
-			console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
+			//console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
 
 		}, 
 
@@ -171,7 +169,7 @@ function compteur() {
 			
 			timerHandler()
 		
-			console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
+			//console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
 
 		}, 
 
@@ -234,7 +232,7 @@ function resetTimer() {
 
 	sessionPause = false
 
-	console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
+	//console.log('isStarted: ', isStarted, ' timerOver: ', timeOver, ' sessionPause: ', sessionPause, ' isBreakTriggered: ', isBreakTriggered)
 
 }
 
